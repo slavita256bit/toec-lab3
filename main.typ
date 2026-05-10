@@ -1,5 +1,5 @@
 #import "@preview/modern-g7-32:0.2.0": *
-#import "@local/typst-bsuir-core:1.4.7": *
+#import "@local/typst-bsuir-core:1.15.31": *
 #import "@preview/zap:0.5.0"
 
 #set text(font: "Times New Roman", size: 14pt)
@@ -29,6 +29,7 @@
 )
 
 #show: apply-toec-styling
+#include complex-math
 
 // Глобальные константы для расчетов
 #let f = 800
@@ -63,7 +64,7 @@
     table.header(
       [№ \ вар.], [Схема на рис.], [$U$, В], [$f$, Гц], [$R_1$, Ом], [$R_2$, Ом], [$R_3$, Ом], [$L$, мГн], [$r_k$, Ом], [$C$, мкФ]
     ),
-    [4], [3.9], [#U_value], [#f], [#V.R1], [#V.R2], [#V.R3], [#V.L], [#V.rk], [#V.C]
+    [4], [#unformat[3.9]], [#U_value], [#f], [#V.R1], [#V.R2], [#V.R3], [#V.L], [#V.rk], [#V.C]
   )
 ) <src-table-1>
 
@@ -83,9 +84,9 @@
     wire("1", (8,10))
     current-arrow("I_arrow", (2,10), (6,10), arrow-label: $dot(I)$, arrow-side: "top")
     inductor-better("L", (8,10), "mid", label: (content: $L$, anchor: "west"), arrow-label: $dot(U)_k$, arrow-side: "right", arrow-dir: "forward")
-    resistor-better("rk", "mid", "2", label: (content: $r_k$, anchor: "west"), arrow-label: (content: $dot(U)_k$, dist: -0.4), arrow-side: "right", arrow-dir: "down")
+    resistor-better("rk", "mid", "2", label: (content: $r_k$, anchor: "west"), arrow-label: [#move(dx: -1em, $dot(U)_k$)], arrow-side: "right", arrow-dir: "down")
     capacitor-better("C", "2", "3", label: (content: $C$, anchor: "west"), arrow-label: $dot(U)_C$, arrow-side: "right", arrow-dir: "down")
-    resistor-better("R1", "3", "4", label: (content: $R_1$, anchor: "top"), arrow-label: $dot(U)_1$, arrow-side: "bottom", arrow-dir: "left")
+    resistor-better("R1", "3", "4", label: (content: $R_1$, anchor: "top"), arrow-label: [#move(dy: 0.4em, $dot(U)_1$)], arrow-side: "bottom", arrow-dir: "left")
   })
 ) <src-circuit-1>
 
@@ -170,7 +171,7 @@
     columns: (auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto, auto),
     align: center + horizon,
     table.header(
-      table.cell(rowspan: 2)[Цепь\ на\ рис.\ 3.5],
+      table.cell(rowspan: 2)[Цепь\ на\ рис.\ #unformat[3.5]],
       table.cell(rowspan: 2)[$X_L$,\ Ом],
       table.cell(rowspan: 2)[$X_C$,\ Ом],
       table.cell(colspan: 2)[$Z_"вх"$],
@@ -226,7 +227,7 @@
     wire("B0", "B3")
 
     // 1-я ветвь (резистор)
-    resistor-better("R1", "T1", "B1", label: (content: $R_1$, anchor: "left"), arrow-label: $dot(I)_1$, arrow-side: "right", arrow-dir: "down")
+    resistor-better("R1", "T1", "B1", label: (content: $R_1$, anchor: "left"), arrow-label: [#move(dx: -0.6em, $dot(I)_1$)], arrow-side: "right", arrow-dir: "down")
 
     // 2-я ветвь (конденсатор)
     capacitor-better("C", "T2", "B2", label: (content: $C$, anchor: "left"), arrow-label: $dot(I)_2$, arrow-side: "right", arrow-dir: "down")
@@ -236,6 +237,7 @@
     resistor-better("rk", "M3", "B3", label: (content: $r_k$, anchor: "left"))
   })
 ) <src-circuit-2>
+// todo точно ли эти схемы корректны? ток одинаковый для ветви или нет? (просто возможно имеет смысл не на элементе ток ставить, а до него ставить)
 
 Найдём комплексные сопротивления каждой ветви:
 #let Z_p1 = rect(V.R1, 0)
@@ -257,7 +259,7 @@
 
 #mathtype-mimic[
   $ dot(Z)_123 = 1 / (1/dot(Z)_1 + 1/dot(Z)_2 + 1/dot(Z)_3) = #display-complex(Z_eq).both " Ом". $
-]
+] //todo here
 
 #let I1_p_calc = calc-ohms-law(U, Z_p1)
 #let I2_p_calc = calc-ohms-law(U, Z_p2)
@@ -267,8 +269,8 @@
 Найдём токи в ветвях по закону Ома:
 #mathtype-mimic[
   $ dot(I)_1 &= dot(U) / dot(Z)_1 = #_fmt(U_value) / (#_fmt(V.R1)) = #display-complex(I1_p_calc.val-mA).polar " мА"; $
-  $ dot(I)_2 &= dot(U) / dot(Z)_2 = #_fmt(U_value) / (-j #_fmt(XC_calc.val)) = #display-complex(I2_p_calc.val-mA).polar " мА"; $
-  $ dot(I)_3 &= dot(U) / dot(Z)_3 = #_fmt(U_value) / (#_fmt(V.rk) + j #_fmt(XL_calc.val)) = #display-complex(I3_p_calc.val-mA).polar " мА". $
+  $ dot(I)_2 &= dot(U) / dot(Z)_2 = #_fmt(U_value) / (-j#_fmt(XC_calc.val)) = #display-complex(I2_p_calc.val-mA).polar " мА"; $
+  $ dot(I)_3 &= dot(U) / dot(Z)_3 = #_fmt(U_value) / (#_fmt(V.rk) + j#_fmt(XL_calc.val)) = #display-complex(I3_p_calc.val-mA).polar " мА". $
 ]
 ]
 
@@ -314,10 +316,10 @@
 #figure(
   caption: [Результаты для параллельной цепи],
   table(
-    columns: (auto, auto, auto, auto, auto, auto, auto, auto, auto),
+    columns: (1fr, auto, auto, auto, auto, auto, auto, auto, auto),
     align: center + horizon,
     table.header(
-      table.cell(rowspan: 2)[Цепь\ на\ рис.\ 3.6],
+      table.cell(rowspan: 2)[Цепь на\ рис. #unformat[3.6]],
       table.cell(colspan: 2)[$I$],
       table.cell(colspan: 2)[$I_1$],
       table.cell(colspan: 2)[$I_2$],
@@ -377,8 +379,8 @@
 #mathtype-mimic[
   $ dot(Z)_1 &= R_1 = #_fmt(V.R1) " Ом"; $
   $ dot(Z)_2 &= R_2 = #_fmt(V.R2) " Ом"; $
-  $ dot(Z)_3 &= R_3 - j X_C = #_fmt(V.R3) - j #_fmt(XC_calc.val) " Ом". $
-]
+  $ dot(Z)_3 &= R_3 - j X_C = #_fmt(V.R3) - j#_fmt(XC_calc.val) " Ом". $
+] //todo here
 
 Вычислим эквивалентное сопротивление разветвленного участка $dot(Z)_23$ и общее эквивалентное сопротивление цепи $dot(Z)$:
 #let Z_m23_num = mul(Z_m2, Z_m3)
@@ -389,7 +391,8 @@
 #mathtype-mimic[
   $ dot(Z)_23 &= (dot(Z)_2 dot dot(Z)_3) / (dot(Z)_2 + dot(Z)_3) = #display-complex(Z_m23).both " Ом"; $
   $ dot(Z) &= dot(Z)_1 + dot(Z)_23 = #display-complex(Z_m_eq).both " Ом". $
-]
+] //todo here
+
 
 #let I1_m = div(U, Z_m_eq)
 #let U23_m = mul(I1_m, Z_m23)
@@ -402,7 +405,7 @@
 
 #block(breakable: false)[
 Определим токи в ветвях:
-#mathtype-mimic[
+#mathtype-mimic(spacing: 1em)[
   $ dot(I)_1 &= dot(U) / dot(Z) = #_fmt(U_value) / (#display-complex(Z_m_eq).polar) = #display-complex(polar(I1_pp_m.mag * 1000, I1_pp_m.ang)).polar " мА"; $
   $ dot(U)_2 &= dot(U)_23 = dot(I)_1 dot dot(Z)_23 = #display-complex(U23_m).polar " В"; $
   $ dot(I)_2 &= dot(U)_23 / dot(Z)_2 = #display-complex(polar(I2_pp_m.mag * 1000, I2_pp_m.ang)).polar " мА"; $
@@ -439,7 +442,7 @@
   $ dot(S)_"ист" &= dot(U) dot(I)_1^* = #display-complex(U).polar dot #display-complex(to-polar(I1_conj)).polar = #display-complex(S_source).rect " ВА"; $
   $ P_"потр" &= I_1^2 R_1 + I_2^2 R_2 + I_3^2 R_3 = #_fmt(P_load) " Вт"; $
   $ Q_"потр" &= -I_3^2 X_C = #_fmt(Q_load) " ВА"; $
-//   $ cos phi &= P_"потр" / S_"ист" = #_fmt(P_load) / #_fmt(S_source.mag) = #_fmt(cos_phi). $
+  $ cos phi &= P_"потр" / S_"ист" = #_fmt(P_load) / #_fmt(S_source.mag) = #_fmt(cos_phi). $
 ]
 
 // ПРОВЕРКА ЗАКОНОВ КИРХГОФА И БАЛАНСА (для самоконтроля, закомментировано)
@@ -494,3 +497,6 @@
     [Опыт], ..rotate-cells(..((hide("............"),) * 11))
   )
 ) <res-table-3>
+
+//todo may be gap in mathtype mimic
+//todo remove Z_XXX=..., make them inline, put real values, add diagrams (with debug section that will render not only from 0)
