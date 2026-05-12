@@ -1,5 +1,5 @@
 #import "@preview/modern-g7-32:0.2.0": *
-#import "@local/typst-bsuir-core:1.15.36": *
+#import "@local/typst-bsuir-core:1.15.38": *
 #import "@preview/zap:0.5.0"
 
 #set text(font: "Times New Roman", size: 14pt)
@@ -30,6 +30,14 @@
 
 #show: apply-toec-styling
 #include complex-math
+
+#show math.equation: eq => {
+//   show regex(","): [] //works
+//   show regex("00"): [] //works
+  show regex(",00"): none // not work
+  eq
+} //todo
+
 
 // Глобальные константы для расчетов
 #let f = 800
@@ -205,9 +213,9 @@
       (val: I_calc.val, scale: 100, label: $dot(I)$, anchor: "north-west"),
     ),
     voltages: (
-      (val: U_1_calc.val, label: $dot(U)_1$, anchor: "north"),
+      (val: U_1_calc.val, label: $dot(U)_1$, anchor: "west"),
       (val: U_C_calc.val, label: $dot(U)_C$, anchor: "east"),
-      (val: U_K_calc.val, label: $dot(U)_k$, anchor: "south-east"),
+      (val: U_K_calc.val, label: $dot(U)_k$, anchor: "south"),
     ),
 
     sum-voltage: (label: $dot(U)$, anchor: "north-west"),
@@ -593,7 +601,11 @@
   )
 )
 
-//todo may be gap in mathtype mimic
 //todo упоминания диаграмм в тексте
 //todo remove Z_XXX=..., make them inline
 //todo put real values
+//todo греческие не наклонные
+//todo make sure vector diagrams are as expected
+//сделать j справа местами
+//новую версию применить
+//todo сделать этот же кал в маткаде

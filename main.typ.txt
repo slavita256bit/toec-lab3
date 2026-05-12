@@ -1,5 +1,5 @@
 #import "@preview/modern-g7-32:0.2.0": *
-#import "@local/typst-bsuir-core:1.15.31": *
+#import "@local/typst-bsuir-core:1.15.38": *
 #import "@preview/zap:0.5.0"
 
 #set text(font: "Times New Roman", size: 14pt)
@@ -30,6 +30,14 @@
 
 #show: apply-toec-styling
 #include complex-math
+
+#show math.equation: eq => {
+//   show regex(","): [] //works
+//   show regex("00"): [] //works
+  show regex(",00"): none // not work
+  eq
+} //todo
+
 
 // Глобальные константы для расчетов
 #let f = 800
@@ -195,6 +203,27 @@
   )
 ) <res-table-1>
 
+#lab-figure(
+  caption: [Векторная диаграмма напряжений и тока для последовательной цепи],
+  vector-diagram(
+    chain-voltages: true,
+
+    currents: (
+      // Увеличиваем ток в 100 раз для наглядности (т.к. он в амперах и очень мал)
+      (val: I_calc.val, scale: 100, label: $dot(I)$, anchor: "north-west"),
+    ),
+    voltages: (
+      (val: U_1_calc.val, label: $dot(U)_1$, anchor: "west"),
+      (val: U_C_calc.val, label: $dot(U)_C$, anchor: "east"),
+      (val: U_K_calc.val, label: $dot(U)_k$, anchor: "south"),
+    ),
+
+    sum-voltage: (label: $dot(U)$, anchor: "north-west"),
+
+    axes: (x: 6, y: 14)
+  )
+)
+
 == Параллельная цепь
 
 Схема электрической цепи для параллельного соединения элементов представлена на рисунке @src-circuit-2.
@@ -334,6 +363,33 @@
     [Опыт], ..((hide("......."),) * 8)
   )
 ) <res-table-2>
+
+#lab-figure(
+  caption: [Векторная диаграмма токов и напряжения для параллельной цепи],
+  vector-diagram(
+    chain-currents: true,
+
+    // Напряжение U = 5В (один вектор из начала координат)
+    voltages: (
+      (val: U, label: $dot(U)$, anchor: "north-west"),
+    ),
+
+    currents: (
+      // Масштаб 200, чтобы токи (~0.03А) выглядели как векторы длиной ~6 единиц
+      // I1 - активный (по фазе с U)
+      (val: I1_p_calc.val, scale: 200, label: $dot(I)_1$, anchor: "north"),
+      // I2 - емкостной (идет вверх)
+      (val: I2_p_calc.val, scale: 200, label: $dot(I)_2$, anchor: "east"),
+      // I3 - индуктивный с потерями (идет вниз и вправо)
+      (val: I3_p_calc.val, scale: 200, label: $dot(I)_3$, anchor: "south-west"),
+    ),
+
+    // Суммарный вектор тока I
+    sum-current: (label: $dot(I)$, anchor: "south-east"),
+
+    axes: (x: 10, y: 12)
+  )
+)
 
 == Разветвленная цепь
 
@@ -498,5 +554,57 @@
   )
 ) <res-table-3>
 
-//todo may be gap in mathtype mimic
-//todo remove Z_XXX=..., make them inline, put real values, add diagrams (with debug section that will render not only from 0)
+
+// --- Вычисляем координаты точек для топографической диаграммы ---
+#let i_sc = 400 // Масштаб для токов
+#let p0 = (0, 0)
+// Токи
+#let p_i2 = (to-rect(I2_m).re * i_sc, to-rect(I2_m).im * i_sc)
+#let p_i1 = (to-rect(I1_m).re * i_sc, to-rect(I1_m).im * i_sc)
+// Напряжения
+#let p_u2 = (to-rect(U2_m).re, to-rect(U2_m).im)
+#let p_u = (to-rect(U).re, to-rect(U).im)
+#let p_u3 = (to-rect(U3_m).re, to-rect(U3_m).im)
+
+#lab-figure(
+  caption: [Топографическая диаграмма напряжений и векторная диаграмма токов разветвленной цепи],
+  vector-diagram(
+    // Отключаем автоматическое связывание, мы зададим start/end вручную
+    chain-voltages: false,
+    chain-currents: false,
+
+    voltages: (
+      // Ветвь 2: Напряжение U2
+      (start: p0, end: p_u2, label: [#move(dx: 0.9em, dy: 0.7em, $dot(U)_2$)], anchor: "south"),
+      // Ветвь 1: U1 прибавляется к концу U2. Их сумма даст U
+      (start: p_u2, end: p_u, label: $dot(U)_1$, anchor: "north"),
+      // Главное входное напряжение U
+      (start: p0, end: p_u, label: $dot(U)$, anchor: "south"),
+
+      // Ветвь 3: U3 + UC = U2
+      (start: p0, end: p_u3, label: $dot(U)_3$, anchor: "west"),
+      (start: p_u3, end: p_u2, label: $dot(U)_C$, anchor: "north-east"),
+    ),
+
+    currents: (
+      // Сложение токов: I2 + I3 = I1
+      (start: p0, end: p_i2, label: $dot(I)_2$, anchor: "north-west"),
+      (start: p_i2, end: p_i1, label: $dot(I)_3$, anchor: "south-east"),
+      // Суммарный ток I1
+      (start: p0, end: p_i1, label: $dot(I)_1$, anchor: "west"),
+    ),
+
+    sum-voltage: (enabled: false),
+    sum-current: (enabled: false),
+
+    axes: (x: 10, y: 12)
+  )
+)
+
+//todo упоминания диаграмм в тексте
+//todo remove Z_XXX=..., make them inline
+//todo put real values
+//todo греческие не наклонные
+//todo make sure vector diagrams are as expected
+
+//todo сделать этот же кал в маткаде
