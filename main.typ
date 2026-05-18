@@ -1,5 +1,5 @@
 #import "@preview/modern-g7-32:0.2.0": *
-#import "@local/typst-bsuir-core:1.17.2": *
+#import "@local/typst-bsuir-core:1.17.6": *
 #import "@preview/zap:0.5.0"
 
 #set text(font: "Times New Roman", size: 14pt)
@@ -84,7 +84,7 @@
     wire("1", (8,10))
     current-arrow("I_arrow", (2,10), (6,10), arrow-label: $dot(I)$, arrow-side: "top")
     inductor-better("L", (8,10), "mid", label: (content: $L$, anchor: "west"), arrow-label: $dot(U)_k$, arrow-side: "right", arrow-dir: "forward")
-    resistor-better("rk", "mid", "2", label: (content: $r_k$, anchor: "west"), arrow-label: [#move(dx: -1em, $dot(U)_k$)], arrow-side: "right", arrow-dir: "down")
+    resistor-better("rk", "mid", "2", label: (content: $r_k$, anchor: "west"), arrow-label: $dot(U)_k$, arrow-side: "right", arrow-dir: "down")
     capacitor-better("C", "2", "3", label: (content: $C$, anchor: "west"), arrow-label: $dot(U)_C$, arrow-side: "right", arrow-dir: "down")
     resistor-better("R1", "3", "4", label: (content: $R_1$, anchor: "top"), arrow-label: [#move(dy: 0.4em, $dot(U)_1$)], arrow-side: "bottom", arrow-dir: "left")
   })
@@ -190,9 +190,7 @@
     // Форматируем массив (3 знака) -> Поворачиваем на -90 градусов -> Разворачиваем (..) в ячейки
         [Расчет], ..rotate-cells(..format-cells(..calc_row, dec: 3)),
 
-    // Строка для эксперимента (12 пустых ячеек)
-    [Опыт], ..rotate-cells(format-cells([], [], [], [], [21.98], [], [6,93], [61,40], [5,49], [-102,10], [3,12], [-13,90])))
-  )
+    [Опыт], ..rotate-cells(format-cells([], [], [], [], [28.5], [-13.9], [6.90], [61.3], [5.46], [-103], [3.10], [-13.9])))  )
  <res-table-1>
 
 #lab-figure(
@@ -353,7 +351,7 @@
     ),
 
     [Расчет], ..format-cells(..calc_row_par, dec: 3),
-    [Опыт], ..format-cells([18,42], [7,30], [], [], [21,98], [], [6,93], [61,40])
+    [Опыт], ..format-cells([45.6], [7.3], [40.6], [2.8], [25.12], [89.15], [43.1], [-75.2])
   )
 ) <res-table-2>
 
@@ -543,7 +541,7 @@
 
     // Строка для эксперимента (13 пустых ячеек).
     // Длинная скрытая строка при повороте растянет высоту всей ячейки.
-    [Опыт], ..rotate-cells(format-cells([20,885], [], [15,100], [], [75,300], [], [2,850], [7,140], [1,083], [1,850]))
+    [Опыт], ..rotate-cells(format-cells([20,885], [7.04], [15,100], [-10.7], [7,320], [48.6], [2,850], [1,083], [1,850], [1.90], [-41.4]))
   )
 ) <res-table-3>
 
@@ -568,7 +566,7 @@
 
     voltages: (
       // Ветвь 2: Напряжение U2
-      (start: p0, end: p_u2, label: [#move(dx: 0.9em, dy: 0.7em, $dot(U)_2$)], anchor: "south"),
+      (start: p0, end: p_u2, label: [#move(dx: 0.9em, dy: 2em, $dot(U)_2$)], anchor: "south"),
       // Ветвь 1: U1 прибавляется к концу U2. Их сумма даст U
       (start: p_u2, end: p_u, label: $dot(U)_1$, anchor: "north"),
       // Главное входное напряжение U
