@@ -1,5 +1,5 @@
 #import "@preview/modern-g7-32:0.2.0": *
-#import "@local/typst-bsuir-core:1.16.18": *
+#import "@local/typst-bsuir-core:1.17.2": *
 #import "@preview/zap:0.5.0"
 
 #set text(font: "Times New Roman", size: 14pt)
@@ -188,12 +188,12 @@
     ),
 
     // Форматируем массив (3 знака) -> Поворачиваем на -90 градусов -> Разворачиваем (..) в ячейки
-    [Расчет], ..rotate-cells(..format-cells(..calc_row, dec: 3)),
+        [Расчет], ..rotate-cells(..format-cells(..calc_row, dec: 3)),
 
     // Строка для эксперимента (12 пустых ячеек)
-    [Опыт], ..rotate-cells(..((hide("............."),) * 12))
+    [Опыт], ..rotate-cells(format-cells([], [], [], [], [21.98], [], [6,93], [61,40], [5,49], [-102,10], [3,12], [-13,90])))
   )
-) <res-table-1>
+ <res-table-1>
 
 #lab-figure(
   caption: [Векторная диаграмма напряжений и тока для последовательной цепи],
@@ -212,7 +212,7 @@
 
     sum-voltage: (label: $dot(U)$, anchor: "north-west"),
 
-    axes: (x: 6, y: 14)
+    axes: (x: (-2,7), y: (-6,3))
   )
 )
 
@@ -333,6 +333,7 @@
   I2_pp.mag, I2_pp.ang,
   I3_pp.mag, I3_pp.ang
 )
+#pagebreak()
 
 #figure(
   caption: [Результаты для параллельной цепи],
@@ -352,7 +353,7 @@
     ),
 
     [Расчет], ..format-cells(..calc_row_par, dec: 3),
-    [Опыт], ..((hide("......."),) * 8)
+    [Опыт], ..format-cells([18,42], [7,30], [], [], [21,98], [], [6,93], [61,40])
   )
 ) <res-table-2>
 
@@ -379,7 +380,7 @@
     // Суммарный вектор тока I
     sum-current: (label: $dot(I)$, anchor: "south-east"),
 
-    axes: (x: 9, y: 12)
+    axes: (x: (-2,10), y: (-5, 7))
   )
 )
 
@@ -542,7 +543,7 @@
 
     // Строка для эксперимента (13 пустых ячеек).
     // Длинная скрытая строка при повороте растянет высоту всей ячейки.
-    [Опыт], ..rotate-cells(..((hide("............"),) * 11))
+    [Опыт], ..rotate-cells(format-cells([20,885], [], [15,100], [], [75,300], [], [2,850], [7,140], [1,083], [1,850]))
   )
 ) <res-table-3>
 
@@ -589,7 +590,7 @@
     sum-voltage: (enabled: false),
     sum-current: (enabled: false),
 
-    axes: (x: 10, y: 12)
+    axes: (x: (-2,11), y: (-4,5))
   )
 )
 
