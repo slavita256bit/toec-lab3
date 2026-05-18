@@ -1,5 +1,5 @@
 #import "@preview/modern-g7-32:0.2.0": *
-#import "@local/typst-bsuir-core:1.15.38": *
+#import "@local/typst-bsuir-core:1.16.18": *
 #import "@preview/zap:0.5.0"
 
 #set text(font: "Times New Roman", size: 14pt)
@@ -30,14 +30,6 @@
 
 #show: apply-toec-styling
 #include complex-math
-
-#show math.equation: eq => {
-//   show regex(","): [] //works
-//   show regex("00"): [] //works
-  show regex(",00"): none // not work
-  eq
-} //todo
-
 
 // Глобальные константы для расчетов
 #let f = 800
@@ -112,7 +104,7 @@
   (type: "XL", val: XL_calc.val),
   (type: "XC", val: XC_calc.val),
 )
-#let Z_calc = calc-series-impedance(components)
+#let Z_calc = calc-series-impedance(components, symbol: "")
 #Z_calc.display
 
 Определяем комплексный ток, приняв начальную фазу входного напряжения равной нулю:
@@ -182,13 +174,13 @@
       table.cell(rowspan: 2)[Цепь\ на\ рис.\ #unformat[3.5]],
       table.cell(rowspan: 2)[$X_L$,\ Ом],
       table.cell(rowspan: 2)[$X_C$,\ Ом],
-      table.cell(colspan: 2)[$Z_"вх"$],
+      table.cell(colspan: 2)[$Z$],
       table.cell(colspan: 2)[$I$],
       table.cell(colspan: 2)[$U_K$],
       table.cell(colspan: 2)[$U_C$],
       table.cell(colspan: 2)[$U_1$],
       // Вторая строка шапки
-      [$Z_"вх"$,\ Ом], [$phi$,\ град.],
+      [$Z$,\ Ом], [$phi$,\ град.],
       [$I$,\ мА], [$psi_1$,\ град],
       [$U_K$,\ В], [$psi_(U K)$,\ град.],
       [$U_C$,\ В], [$psi_(U C)$,\ град.],
@@ -256,7 +248,7 @@
     wire("B0", "B3")
 
     // 1-я ветвь (резистор)
-    resistor-better("R1", "T1", "B1", label: (content: $R_1$, anchor: "left"), arrow-label: [#move(dx: -0.6em, $dot(I)_1$)], arrow-side: "right", arrow-dir: "down")
+    resistor-better("R1", "T1", "B1", label: (content: $R_1$, anchor: "left"), arrow-label: $dot(I)_1$, arrow-side: "right", arrow-dir: "down")
 
     // 2-я ветвь (конденсатор)
     capacitor-better("C", "T2", "B2", label: (content: $C$, anchor: "left"), arrow-label: $dot(I)_2$, arrow-side: "right", arrow-dir: "down")
@@ -367,7 +359,7 @@
 #lab-figure(
   caption: [Векторная диаграмма токов и напряжения для параллельной цепи],
   vector-diagram(
-    chain-currents: true,
+    chain-currents: false,
 
     // Напряжение U = 5В (один вектор из начала координат)
     voltages: (
@@ -387,7 +379,7 @@
     // Суммарный вектор тока I
     sum-current: (label: $dot(I)$, anchor: "south-east"),
 
-    axes: (x: 10, y: 12)
+    axes: (x: 9, y: 12)
   )
 )
 
@@ -601,11 +593,4 @@
   )
 )
 
-//todo упоминания диаграмм в тексте
-//todo remove Z_XXX=..., make them inline
-//todo put real values
-//todo греческие не наклонные
-//todo make sure vector diagrams are as expected
-//сделать j справа местами
-//новую версию применить
-//todo сделать этот же кал в маткаде
+//todo перечекать диаграммы + сделать их на реальных значениях
